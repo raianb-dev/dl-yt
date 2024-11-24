@@ -6,6 +6,8 @@ from django.http import FileResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import os
 from tempfile import NamedTemporaryFile
+from time import sleep
+from teste import processa_location
 
 @csrf_exempt
 def download_audio(request):
@@ -13,6 +15,7 @@ def download_audio(request):
         init = 'init'
         detail = 'detail'
         convert = 'convert'
+        progress = 'progress'  # Nova rota para verificar o status do processamento
         video_url = request.POST.get('video_id')
         
         # Verifique se a URL não está vazia
@@ -53,14 +56,27 @@ def download_audio(request):
             return JsonResponse({'error': 'Hash not found'}, status=400)
         
         # Converter o vídeo em .mp3
-        payload = {'id': f'{hash_id}', 'format': '64k', 'type': 'direct', 's': 'false'}
+        payload = {'id': f'{hash_id}', 'format': '64k', 'type': 'direct', 's': 600}
         requests.post(url=f'{url}{convert}', headers=headers, data=payload)
 
-        # Obter link de download
+        # Iniciar o processamento no endpoint progress
+        while True:
+            # Verificar o status do processamento a cada 1 segundo
+            progress_payload = {'id': f'{hash_id}'}
+            progress_req = requests.post(url=f'{url}{progress}', headers=headers, data=progress_payload)
+            progress_res = json.loads(progress_req.text)
+            status = progress_res.get('status', False)
+            print(f"Status do vídeo: {status}")
+
+            if status:  # Se status for true, significa que o vídeo foi processado
+                break
+            else:
+                sleep(1)  # Aguardar 1 segundo antes de verificar novamente
+        
+        # Após o processamento ser concluído, buscar o link de download
         payload = {'id': f'{hash_id}', 'format': '64k', 'type': 'sound', 'readType': 'sound', 'direct': 'direct'}
         req = requests.post(url=f'{url}{detail}', headers=headers, data=payload)
         res = json.loads(req.text)
-        print(hash_id)
         file_url = res.get('fileUrl', [None])[0]
         file_name = res.get('fileName', 'audio.mp3')
         print(file_url, file_name)
@@ -68,12 +84,25 @@ def download_audio(request):
             return JsonResponse({'error': 'File URL not found'}, status=400)
 
         # Download do arquivo
-        file_response = requests.get(file_url, allow_redirects=False, stream=True ,headers=headers)
-        print(hash_id)
+        file_response = requests.get(file_url, allow_redirects=False, stream=True)
+        print(file_response.status_code)
+        
+        # Se a resposta for 302, tenta processar a URL com a função processa_location
         if file_response.status_code == 302:
-            location_url = file_response.headers.get("Location")
-            # location = response_headers.get('Location')
-            file_response = requests.get(location_url, allow_redirects=False, stream=True ,headers=headers)
+            # A função processa_location deve retornar uma URL válida
+            new_file_url = processa_location(file_url)
+            if new_file_url:
+                # Fazer a requisição GET novamente para o novo link
+                file_response = requests.get(new_file_url, stream=True)
+                print(f"Segunda tentativa - Status Code: {file_response.status_code}")
+            else:
+                return JsonResponse({'error': 'Não foi possível processar a URL.'}, status=400)
+            
+        # Verificar se a resposta é válida
+        if file_response.status_code != 200:
+            return JsonResponse({'error': 'Falha ao baixar o arquivo.'}, status=400)
+
+        print('Tipo final de file_response:', type(file_response))           
 
         # Salvar o arquivo temporariamente
         with NamedTemporaryFile(delete=False, suffix=".mp3") as temp_file:
