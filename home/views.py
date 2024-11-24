@@ -7,7 +7,6 @@ from django.views.decorators.csrf import csrf_exempt
 import os
 from tempfile import NamedTemporaryFile
 
-
 @csrf_exempt
 def download_audio(request):
     if request.method == 'POST':
@@ -54,7 +53,7 @@ def download_audio(request):
             return JsonResponse({'error': 'Hash not found'}, status=400)
         
         # Converter o vídeo em .mp3
-        payload = {'id': f'{hash_id}', 'format': '64k', 'type': 'direct', 's': 600}
+        payload = {'id': f'{hash_id}', 'format': '64k', 'type': 'direct', 's': 'false'}
         requests.post(url=f'{url}{convert}', headers=headers, data=payload)
 
         # Obter link de download
@@ -69,13 +68,12 @@ def download_audio(request):
             return JsonResponse({'error': 'File URL not found'}, status=400)
 
         # Download do arquivo
-        file_response = requests.get(file_url, allow_redirects=False, stream=True)
-        print(file_response.status_code)
-        if file_response.status_code != 200:
-            response = requests.get(file_url, allow_redirects=False)
-            location_url = response.headers.get("Location")
-            file_response = requests.get(location_url, allow_redirects=False, stream=True)
-            
+        file_response = requests.get(file_url, allow_redirects=False, stream=True ,headers=headers)
+        print(hash_id)
+        if file_response.status_code == 302:
+            location_url = file_response.headers.get("Location")
+            # location = response_headers.get('Location')
+            file_response = requests.get(location_url, allow_redirects=False, stream=True ,headers=headers)
 
         # Salvar o arquivo temporariamente
         with NamedTemporaryFile(delete=False, suffix=".mp3") as temp_file:
