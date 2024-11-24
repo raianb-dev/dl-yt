@@ -6,6 +6,7 @@ from django.http import FileResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import os
 from tempfile import NamedTemporaryFile
+from teste import processa_location
 
 @csrf_exempt
 def download_audio(request):
@@ -68,10 +69,13 @@ def download_audio(request):
             return JsonResponse({'error': 'File URL not found'}, status=400)
 
         # Download do arquivo
-        file_response = requests.get(file_url, stream=True, verify=False, allow_redirects=True)
-        print(hash_id)
+        file_response = requests.get(file_url, allow_redirects=False, headers=headers)
+        print(file_response.status_code)
         if file_response.status_code != 200:
-            return JsonResponse({'error': 'Failed to download the file'}, status=400)
+            file_response = processa_location(file_url)
+ 
+
+
 
         # Salvar o arquivo temporariamente
         with NamedTemporaryFile(delete=False, suffix=".mp3") as temp_file:
