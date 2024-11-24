@@ -67,11 +67,8 @@ def download_audio(request):
         if not file_url:
             return JsonResponse({'error': 'File URL not found'}, status=400)
 
-        # Substituir HTTPS por HTTP na URL do arquivo
-        file_url = file_url.replace('https://', 'http://')
-
         # Download do arquivo
-        file_response = requests.get(file_url, stream=True)
+        file_response = requests.get(file_url, stream=True, verify=False)
         print(hash_id)
         if file_response.status_code != 200:
             return JsonResponse({'error': 'Failed to download the file'}, status=400)
@@ -89,4 +86,4 @@ def download_audio(request):
         os.unlink(temp_file_path)
 
         return response
-    return render(request, 'index.html')
+    return render(request,'index.html')
