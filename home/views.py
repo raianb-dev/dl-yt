@@ -41,7 +41,6 @@ def download_audio(request):
             'sec-fetch-mode': 'cors',
             'sec-fetch-site': 'cross-site',
             'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36',
-             
         }
         
         # Capturar o hash através do video_id
@@ -68,6 +67,9 @@ def download_audio(request):
         if not file_url:
             return JsonResponse({'error': 'File URL not found'}, status=400)
 
+        # Substituir HTTPS por HTTP na URL do arquivo
+        file_url = file_url.replace('https://', 'http://')
+
         # Download do arquivo
         file_response = requests.get(file_url, stream=True)
         print(hash_id)
@@ -87,4 +89,4 @@ def download_audio(request):
         os.unlink(temp_file_path)
 
         return response
-    return render(request,'index.html')
+    return render(request, 'index.html')
