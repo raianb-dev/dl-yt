@@ -144,7 +144,16 @@
     
     <!-- Novo bloco de anúncio para dispositivos móveis -->
     <div class="ad-mobile">
-
+        <script type="text/javascript">
+            atOptions = {
+                'key' : '097a5ef173fd534685ec9f4bbf17f0f8',
+                'format' : 'iframe',
+                'height' : 250,
+                'width' : 300,
+                'params' : {}
+            };
+        </script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/097a5ef173fd534685ec9f4bbf17f0f8/invoke.js"></script>
     </div>
     
 
@@ -189,7 +198,7 @@
             });
 
             if (!response.ok) {
-                throw new Error('Erro ao processar o download.');
+                throw new Error('Error processing download.');
             }
 
             // Atualizar a barra de progresso enquanto espera
