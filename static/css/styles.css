@@ -1,6 +1,6 @@
 
 body {
-    background-color: #000000;
+    background-color: #050404e0;
     font-family: Arial, sans-serif;
     color: #fff;
 }
@@ -16,8 +16,12 @@ body {
     color: #fff;
 }
 img{
-    width: 200px;
+    width: 150px;
     margin: 0 auto;
+}
+
+.lead{
+    font-size: 17px;
 }
 #videoUrl::placeholder{
     color: #ccc;
