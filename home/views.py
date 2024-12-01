@@ -1,6 +1,6 @@
 import json
 import re
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 import requests
 from django.http import FileResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -8,6 +8,11 @@ import os
 from tempfile import NamedTemporaryFile
 from time import sleep
 from teste import processa_location
+
+
+def redirect_to_home(request, undefined_path=None):
+    # Isso redireciona o usuário para a página inicial
+    return redirect('download_audio')
 
 @csrf_exempt
 def download_audio(request):
