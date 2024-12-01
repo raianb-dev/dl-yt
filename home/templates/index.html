@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -10,7 +11,7 @@
     <meta name="description" content="Baixe músicas do YouTube com facilidade. Insira o link do vídeo e obtenha o áudio rapidamente. Serviço rápido, seguro e gratuito!">
     <meta name="keywords" content="download música, converter YouTube, baixar MP3, áudio YouTube, baixar músicas online">
     <meta name="robots" content="index, follow">
-
+    <link rel="icon" href="{% static 'img/logo.png' %}">
 
     <style>
         body {
@@ -18,11 +19,20 @@
             font-family: Arial, sans-serif;
             color: #fff;
         }
+        .banner-vert{
+            margin-left: 10%;
+            transform: translateY(-200px);
+            z-index: 99999999;
+        }
         #videoUrl{
             background-color: #222;
             border: 0.5px #ccc solid;
             margin-right: 15px;
             color: #fff;
+        }
+        img{
+            width: 200px;
+            margin: 0 auto;
         }
         #videoUrl::placeholder{
             color: #ccc;
@@ -131,6 +141,7 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card p-4">
+                <img alt="mp3 flow logo" src="{% static 'img/logo.png' %}">
                 <h1 class="mb-4">Baixe sua Música do YouTube</h1>
 
                 <p class="lead">Cole o link do vídeo do YouTube abaixo para começar o download.</p>
@@ -154,7 +165,7 @@
                     <div class="progress-bar" id="progressBar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
             </div>
-        </div>
+        </img>
     </div>
     
 </div>
@@ -264,15 +275,6 @@
     });
 </script>
 <script type='text/javascript' src='//pl25158360.profitablecpmrate.com/2d/41/a8/2d41a820a49c260fa2cab1677d2c5532.js'></script>
-<script type="text/javascript">
-	atOptions = {
-		'key' : 'fd01021ec3cf06c8dfd620a6297b890d',
-		'format' : 'iframe',
-		'height' : 600,
-		'width' : 160,
-		'params' : {}
-	};
-</script>
-<script type="text/javascript" src="//www.highperformanceformat.com/fd01021ec3cf06c8dfd620a6297b890d/invoke.js"></script>
+
 </body>
 </html>
