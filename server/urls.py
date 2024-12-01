@@ -5,8 +5,10 @@ from django.conf.urls.static import static
 
 
 urlpatterns = [
-    path('', home_view.download_audio, name='download_audio'),
+        path('', home_view.redirect_to_home, name='in'),
+    path('convertt-mp3/youtube/', home_view.download_audio, name='download_audio'),
     path('<path:undefined_path>', home_view.redirect_to_home, name='404'),
+
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
