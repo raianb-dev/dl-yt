@@ -6,7 +6,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
         path('', home_view.redirect_to_home, name='in'),
-    path('convertt-mp3/youtube/', home_view.download_audio, name='download_audio'),
+    path('convert-mp3/youtube/', home_view.download_audio, name='download_audio'),
     path('<path:undefined_path>', home_view.redirect_to_home, name='404'),
 
 ]
